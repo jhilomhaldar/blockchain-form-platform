@@ -11,6 +11,13 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 from decouple import config
 from pathlib import Path
+import mimetypes
+
+mimetypes.add_type("text/css", ".css", True)
+mimetypes.add_type("application/javascript", ".js", True)
+mimetypes.add_type("image/svg+xml", ".svg", True)
+mimetypes.add_type("font/woff", ".woff", True)
+mimetypes.add_type("font/woff2", ".woff2", True)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,6 +38,8 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 # Application definition
 
 INSTALLED_APPS = [
+    "jazzmin",
+
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -61,7 +70,7 @@ ROOT_URLCONF = 'blockchain_form.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -126,6 +135,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 CORS_ALLOWED_ORIGINS = [
     config("CORS_ALLOWED_ORIGINS", default="http://localhost:5173"),
@@ -141,4 +151,96 @@ REST_FRAMEWORK = {
         "rest_framework.parsers.FormParser",
         "rest_framework.parsers.MultiPartParser",
     ],
+}
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Blockchain Form Admin",
+    "site_header": "Blockchain Form Platform",
+    "site_brand": "Blockchain Forms",
+    "welcome_sign": "Welcome to Blockchain Form Platform Admin",
+    "copyright": "Jhilom Haldar",
+
+    "search_model": [
+        "auth.User",
+        "submissions.FormTemplate",
+        "submissions.FormSubmission",
+    ],
+
+    "topmenu_links": [
+        {"name": "Dashboard", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "View API Forms", "url": "/api/forms/", "new_window": True},
+        {"name": "GitHub", "url": "https://github.com/jhilomhaldar/blockchain-form-platform", "new_window": True},
+    ],
+
+    "usermenu_links": [
+        {"name": "GitHub Repository", "url": "https://github.com/jhilomhaldar/blockchain-form-platform", "new_window": True},
+    ],
+
+    "show_sidebar": True,
+    "navigation_expanded": True,
+
+    "order_with_respect_to": [
+        "submissions",
+        "submissions.FormTemplate",
+        "submissions.FormSubmission",
+        "submissions.BlockchainTransaction",
+        "submissions.VerificationLog",
+        "auth",
+    ],
+
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.User": "fas fa-user",
+        "auth.Group": "fas fa-users",
+
+        "submissions.FormTemplate": "fas fa-file-alt",
+        "submissions.FormSubmission": "fas fa-inbox",
+        "submissions.BlockchainTransaction": "fas fa-link",
+        "submissions.VerificationLog": "fas fa-check-circle",
+    },
+
+    "default_icon_parents": "fas fa-folder",
+    "default_icon_children": "fas fa-circle",
+
+    "related_modal_active": True,
+
+    "changeform_format": "horizontal_tabs",
+    "changeform_format_overrides": {
+        "submissions.FormTemplate": "collapsible",
+        "submissions.FormSubmission": "horizontal_tabs",
+    },
+}
+
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+
+    "brand_colour": "navbar-dark",
+    "accent": "accent-primary",
+    "navbar": "navbar-dark navbar-primary",
+    "no_navbar_border": False,
+
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": True,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+
+    "theme": "flatly",
+
+    "default_theme_mode": "light",   
+
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success",
+    },
 }
