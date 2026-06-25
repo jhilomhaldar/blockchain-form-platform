@@ -532,3 +532,32 @@ button:disabled {
     -webkit-print-color-adjust: exact;
   }
 }
+.certificate-side {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  min-width: 150px;
+}
+
+.certificate-qr {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.certificate-qr span {
+  font-size: 12px;
+  font-weight: 700;
+  color: #374151;
+}
+
+@media print {
+  .certificate-qr {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}

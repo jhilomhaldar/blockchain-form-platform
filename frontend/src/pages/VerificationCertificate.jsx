@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getSubmissionCertificate } from "../services/api.js";
+import { QRCodeSVG } from "qrcode.react";
 
 function VerificationCertificate() {
   const { submissionRef } = useParams();
@@ -81,14 +82,26 @@ const handleCopyCertificateLink = async () => {
               </p>
             </div>
 
+           <div className="certificate-side">
             <div
-              className={
+                className={
                 certificate.final_verified
-                  ? "certificate-seal certificate-seal-success"
-                  : "certificate-seal certificate-seal-failed"
-              }
+                    ? "certificate-seal certificate-seal-success"
+                    : "certificate-seal certificate-seal-failed"
+                }
             >
-              {certificate.final_verified ? "VALID" : "FAILED"}
+                {certificate.final_verified ? "VALID" : "FAILED"}
+            </div>
+
+            <div className="certificate-qr">
+                <QRCodeSVG
+                value={window.location.href}
+                size={120}
+                level="H"
+                includeMargin={true}
+                />
+                <span>Scan to verify</span>
+            </div>
             </div>
           </div>
 
