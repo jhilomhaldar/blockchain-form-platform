@@ -22,6 +22,7 @@ WalletConnect / Trust Wallet
 → Local Hardhat Blockchain
 → Solidity Smart Contract Proof Registry
 → Verification API
+→ Public Certificate Page
 ```
 
 ---
@@ -380,6 +381,12 @@ http://127.0.0.1:8000/api/forms/
 
 Submission API:
 http://127.0.0.1:8000/api/submissions/
+
+Dashboard API:
+http://127.0.0.1:8000/api/submissions/dashboard/
+
+Certificate API:
+http://127.0.0.1:8000/api/certificates/SUB-YYYYMMDD-000001/
 ```
 
 The root URL `http://127.0.0.1:8000/` may show 404. That is normal because this backend currently exposes `/admin/` and `/api/`.
@@ -413,71 +420,6 @@ http://127.0.0.1:8000/api/forms/contact-verification-form/
 ```
 
 You should see the form template and fields in JSON format.
-
-### Optional Manual Fallback
-
-If the seed command is not available, create the form manually from Django admin.
-
-Open:
-
-```text
-http://127.0.0.1:8000/admin/
-```
-
-Go to:
-
-```text
-Submissions → Form templates → Add
-```
-
-Create this form:
-
-```text
-Title: Contact Verification Form
-Slug: contact-verification-form
-Description: A sample blockchain-ready contact form for secure submission verification.
-Status: ACTIVE
-```
-
-Add these form fields:
-
-```text
-Label: Name
-Key: name
-Field type: TEXT
-Required: Yes
-Sort order: 1
-Active: Yes
-```
-
-```text
-Label: Email
-Key: email
-Field type: EMAIL
-Required: Yes
-Sort order: 2
-Active: Yes
-```
-
-```text
-Label: Phone
-Key: phone
-Field type: PHONE
-Required: No
-Sort order: 3
-Active: Yes
-```
-
-```text
-Label: Message
-Key: message
-Field type: TEXTAREA
-Required: No
-Sort order: 4
-Active: Yes
-```
-
-Save the form template.
 
 ---
 
@@ -568,7 +510,48 @@ npm run dev
 
 ---
 
-## 13. Test Full Form Submission Flow
+## 13. Frontend Pages
+
+### Form Submission Page
+
+```text
+http://localhost:5173/forms/contact-verification-form
+```
+
+### Submissions Dashboard
+
+```text
+http://localhost:5173/dashboard
+```
+
+### Technical Verification Page
+
+```text
+http://localhost:5173/verify/SUB-YYYYMMDD-000001
+```
+
+### Public Verification Certificate Page
+
+```text
+http://localhost:5173/certificate/SUB-YYYYMMDD-000001
+```
+
+The certificate page includes:
+
+```text
+VALID / FAILED seal
+Stored data hash
+Regenerated data hash
+Blockchain transaction hash
+Wallet address
+QR code
+Print / Save PDF button
+Copy Certificate Link button
+```
+
+---
+
+## 14. Test Full Form Submission Flow
 
 Open:
 
@@ -591,10 +574,20 @@ Transaction Hash: 0x...
 Blockchain Message: Proof stored on blockchain.
 ```
 
-Then click:
+Then open:
 
 ```text
-Verify this submission
+http://localhost:5173/dashboard
+```
+
+From the dashboard, test:
+
+```text
+Verify
+Certificate
+Print / Save PDF
+Copy Certificate Link
+QR code scan/open
 ```
 
 Expected verification result:
@@ -604,11 +597,12 @@ Verified Successfully
 Database Verified: true
 Blockchain Verified: true
 Final Verification: true
+Certificate Status: VALID
 ```
 
 ---
 
-## 14. API Testing
+## 15. API Testing
 
 ### Get Form
 
@@ -644,11 +638,51 @@ Request body:
 GET http://127.0.0.1:8000/api/submissions/SUB-YYYYMMDD-000001/verify/
 ```
 
+### Dashboard API
+
+```http
+GET http://127.0.0.1:8000/api/submissions/dashboard/
+```
+
+### Certificate API
+
+```http
+GET http://127.0.0.1:8000/api/certificates/SUB-YYYYMMDD-000001/
+```
+
 Replace `SUB-YYYYMMDD-000001` with the actual submission reference.
 
 ---
 
-## 15. Troubleshooting
+## 16. Resync Old Local Blockchain Proofs
+
+Local Hardhat blockchain data resets when the Hardhat node is restarted. PostgreSQL records remain, but the current local smart contract may not contain old proofs.
+
+To re-register existing local PostgreSQL submissions into the current deployed local contract, run:
+
+```bash
+cd backend
+source venv/Scripts/activate
+python manage.py resync_blockchain_proofs
+```
+
+Resync only one old record:
+
+```bash
+python manage.py resync_blockchain_proofs --ref SUB-YYYYMMDD-000001
+```
+
+Dry run:
+
+```bash
+python manage.py resync_blockchain_proofs --dry-run
+```
+
+After resync, refresh the dashboard and verify the old records again.
+
+---
+
+## 17. Troubleshooting
 
 ### `psql: command not found`
 
@@ -699,6 +733,14 @@ Check:
 5. BACKEND_WALLET_PRIVATE_KEY is the first Hardhat account private key.
 ```
 
+### Old records fail verification after Hardhat restart
+
+Run:
+
+```bash
+python manage.py resync_blockchain_proofs
+```
+
 ### WalletConnect modal does not open
 
 Check:
@@ -738,7 +780,7 @@ CTRL + F5
 
 ---
 
-## 16. Files Not Committed to GitHub
+## 18. Files Not Committed to GitHub
 
 The following files and folders are intentionally ignored and must be created locally:
 
@@ -756,7 +798,7 @@ Never commit private keys, real wallet secrets, `.env`, or local virtual environ
 
 ---
 
-## 17. Current Local Development Stack
+## 19. Current Local Development Stack
 
 ```text
 Frontend: React + Vite
@@ -765,11 +807,12 @@ Database: PostgreSQL
 Blockchain: Local Hardhat Network
 Smart Contract: Solidity FormProofRegistry
 Wallet: WalletConnect + Trust Wallet
+Certificate: Printable certificate with QR code
 ```
 
 ---
 
-## 18. Future Improvements
+## 20. Future Improvements
 
 Planned improvements:
 
@@ -777,9 +820,9 @@ Planned improvements:
 1. BSC Testnet deployment
 2. Binance Smart Chain mainnet-ready configuration
 3. User-signed blockchain transaction mode
-4. Frontend dashboard for submissions
-5. Public verification certificate page
-6. Screenshots in README
+4. Admin analytics dashboard
+5. Docker setup
+6. GitHub Actions workflow
 7. Production deployment documentation
-8. GitHub Actions workflow
+8. AWS deployment option
 ```

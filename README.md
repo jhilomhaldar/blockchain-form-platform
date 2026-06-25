@@ -41,6 +41,7 @@ WalletConnect / Trust Wallet
 → Blockchain Verification API
 → React Verification Page
 → Public Verification Certificate
+→ Printable / Shareable Certificate with QR Code
 ```
 
 Current blockchain transaction model:
@@ -50,7 +51,7 @@ Connected wallet address is attached to the form submission.
 Backend local Hardhat account submits the proof transaction to the local blockchain.
 ```
 
-This keeps the local demo stable while still showing wallet connection, blockchain proof registration, dashboard review, and certificate-based verification.
+This keeps the local demo stable while still showing wallet connection, blockchain proof registration, dashboard review, certificate-based verification, printable certificate export, and QR-based certificate access.
 
 ---
 
@@ -69,8 +70,11 @@ This keeps the local demo stable while still showing wallet connection, blockcha
 - Web3.py-based backend blockchain transaction handling
 - Blockchain transaction hash storage
 - Submission verification API
-- React verification page
+- React technical verification page
 - Public verification certificate page
+- Printable certificate / Save as PDF support
+- Copy certificate link action
+- QR code on certificate page for scan-to-verify access
 - Frontend submissions dashboard
 - Dashboard action buttons for technical verification and certificate view
 - Django management command to seed demo form data
@@ -98,13 +102,17 @@ This keeps the local demo stable while still showing wallet connection, blockcha
 
 ![Admin Panel](screenshots/04-backend-admin-panel.png)
 
-### Form Submission Dahboard 
+### Form Submission Dashboard
 
-![Admin Panel](screenshots/05-submissions-dashboard.png)
+![Form Submission Dashboard](screenshots/05-submissions-dashboard.png)
 
 ### Verification Certificate
 
-![Admin Panel](screenshots/06-verification-certificate.png)
+![Verification Certificate](screenshots/06-verification-certificate.png)
+
+> Optional recommended screenshot:
+>
+> - `screenshots/07-printable-certificate-with-qr.png`
 
 ---
 
@@ -132,6 +140,7 @@ This keeps the local demo stable while still showing wallet connection, blockcha
 - Wagmi
 - Viem
 - TanStack Query
+- qrcode.react
 
 ### Blockchain
 
@@ -172,6 +181,9 @@ Web3.py Blockchain Service
     |
     v
 Solidity Smart Contract on Local Hardhat Blockchain
+    |
+    v
+Verification API + Certificate Page
 ```
 
 ---
@@ -193,6 +205,7 @@ Instead:
 9. The frontend dashboard lists the submission and blockchain status.
 10. The verification page compares the database hash with the blockchain proof.
 11. The certificate page displays a public-style verification result.
+12. The certificate can be printed, saved as PDF, copied as a link, or opened through a QR code.
 
 Example:
 
@@ -202,7 +215,8 @@ Submitted Data
 → SHA-256 Hash
 → Smart Contract Proof
 → Verification Result
-→ Certificate Page
+→ Public Certificate
+→ Printable / Shareable Certificate
 ```
 
 ---
@@ -362,6 +376,24 @@ http://localhost:5173/verify/{submission_ref}
 http://localhost:5173/certificate/{submission_ref}
 ```
 
+The certificate page includes:
+
+```text
+VALID / FAILED seal
+Submission reference
+Form name
+Submitted name and email
+Wallet address
+Stored data hash
+Regenerated data hash
+Blockchain transaction hash
+Submitted date
+Verified date
+QR code for scan-to-verify
+Print / Save PDF button
+Copy certificate link button
+```
+
 ---
 
 ## Local Setup
@@ -518,6 +550,9 @@ Recommended test flow:
 8. Click Verify.
 9. Click Certificate.
 10. Confirm certificate status is VALID.
+11. Click Print / Save PDF.
+12. Click Copy Certificate Link.
+13. Scan or open the QR code URL.
 ```
 
 ---
@@ -536,6 +571,7 @@ Security-focused decisions in this project:
 - PostgreSQL stores the actual private submission data.
 - Verification checks both database hash and blockchain proof.
 - Certificate page displays verification metadata, not full sensitive submission data.
+- QR code contains the certificate page URL, not private submission data.
 
 ---
 
@@ -582,6 +618,9 @@ WalletConnect / Trust Wallet connection
 Frontend submissions dashboard
 Technical verification page
 Public verification certificate page
+Printable certificate / Save as PDF
+Copy certificate link
+QR code on certificate
 Demo data seed command
 Local blockchain proof resync command
 Jazzmin Django admin
