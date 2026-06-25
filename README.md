@@ -59,11 +59,11 @@ Deployment to AWS, BSC Testnet, WalletConnect, and Trust Wallet integration are 
 
 ### Form Submission Page
 
-![Form Submission Page](screenshots/01-form-page.png)
+![Form Submission Page](screenshots/01-frontend-form-page.png)
 
 ### Blockchain Submission Result
 
-![Submission Result](screenshots/02-submission-success.png)
+![Submission Result](screenshots/02-from-submission-success.png)
 
 ### Verification Result
 
@@ -71,7 +71,7 @@ Deployment to AWS, BSC Testnet, WalletConnect, and Trust Wallet integration are 
 
 ### Admin Panel
 
-![Admin Panel](screenshots/04-admin-panel.png)
+![Admin Panel](screenshots/04-backend-admin-panel.png)
 
 ---
 
