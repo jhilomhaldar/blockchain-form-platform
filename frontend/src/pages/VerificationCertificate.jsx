@@ -8,6 +8,7 @@ function VerificationCertificate() {
   const [certificate, setCertificate] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
 
   const shortValue = (value, start = 14, end = 10) => {
     if (!value) return "—";
@@ -19,6 +20,23 @@ function VerificationCertificate() {
     if (!value) return "—";
     return new Date(value).toLocaleString();
   };
+
+  const handlePrint = () => {
+  window.print();
+};
+
+const handleCopyCertificateLink = async () => {
+  try {
+    await navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
+  } catch (err) {
+    setCopied(false);
+  }
+};
 
   useEffect(() => {
     const loadCertificate = async () => {
@@ -143,18 +161,30 @@ function VerificationCertificate() {
             </div>
           </div>
 
-          <div className="certificate-actions">
+          <div className="certificate-actions no-print">
             <Link to="/dashboard" className="secondary-link">
-              Back to Dashboard
+                Back to Dashboard
             </Link>
 
             <Link
-              to={`/verify/${certificate.submission_ref}`}
-              className="secondary-link"
+                to={`/verify/${certificate.submission_ref}`}
+                className="secondary-link"
             >
-              Technical Verification
+                Technical Verification
             </Link>
-          </div>
+
+            <button type="button" className="secondary-link" onClick={handlePrint}>
+                Print / Save PDF
+            </button>
+
+            <button
+                type="button"
+                className="secondary-link table-action-light"
+                onClick={handleCopyCertificateLink}
+            >
+                {copied ? "Link Copied" : "Copy Certificate Link"}
+            </button>
+            </div>
         </div>
       )}
     </section>

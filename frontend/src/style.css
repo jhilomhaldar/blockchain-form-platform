@@ -479,3 +479,56 @@ button:disabled {
     font-size: 26px;
   }
 }
+.secondary-link {
+  border: none;
+  cursor: pointer;
+}
+
+@media print {
+  body {
+    background: #ffffff;
+  }
+
+  .topbar,
+  .no-print {
+    display: none !important;
+  }
+
+  .app-shell {
+    padding: 0;
+  }
+
+  main {
+    padding: 0;
+  }
+
+  .certificate-page {
+    display: block;
+  }
+
+  .certificate-card {
+    box-shadow: none;
+    border: 2px solid #111827;
+    border-radius: 18px;
+    max-width: 100%;
+    margin: 0;
+    page-break-inside: avoid;
+  }
+
+  .certificate-card::before {
+    border-color: #9ca3af;
+  }
+
+  .certificate-seal {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .certificate-grid div,
+  .certificate-label,
+  .certificate-seal-success,
+  .certificate-seal-failed {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
