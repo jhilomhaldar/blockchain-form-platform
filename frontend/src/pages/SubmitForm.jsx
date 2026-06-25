@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getFormBySlug, submitForm } from "../services/api";
+import WalletConnectButton from "../components/WalletConnectButton.jsx";
 
 function SubmitForm() {
   const { slug } = useParams();
@@ -116,15 +117,19 @@ function SubmitForm() {
         <form onSubmit={handleSubmit} className="form-stack">
           <div className="form-group">
             <label>Wallet Address</label>
+
+            <WalletConnectButton onWalletChange={setWalletAddress} />
+
             <input
-              value={walletAddress}
-              onChange={(e) => setWalletAddress(e.target.value)}
-              placeholder="0x..."
+                value={walletAddress}
+                onChange={(e) => setWalletAddress(e.target.value)}
+                placeholder="0x..."
             />
+
             <small>
-              Demo wallet address for now. WalletConnect and Trust Wallet will be added later.
+                You can connect a wallet or manually enter a demo wallet address for local testing.
             </small>
-          </div>
+            </div>
 
           {form?.fields?.map((field) => (
             <div className="form-group" key={field.id}>

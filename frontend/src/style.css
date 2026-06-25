@@ -219,3 +219,27 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 }
+.wallet-box {
+  display: grid;
+  gap: 10px;
+}
+
+.wallet-button {
+  background: #111827;
+}
+
+.wallet-connected {
+  display: grid;
+  gap: 6px;
+  background: #ecfdf5;
+  border: 1px solid #bbf7d0;
+  color: #065f46;
+  padding: 12px 14px;
+  border-radius: 12px;
+}
+
+.wallet-connected span {
+  word-break: break-all;
+  font-family: Consolas, monospace;
+  font-size: 14px;
+}
