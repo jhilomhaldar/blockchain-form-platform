@@ -5,10 +5,10 @@ This guide explains how to set up and run the **Blockchain-Powered Form Submissi
 The project contains:
 
 ```text
-backend/          Django REST Framework backend
-frontend/         React + Vite frontend
-smart-contracts/  Solidity + Hardhat smart contract
-docs/             Project documentation
+backend/           Django REST Framework backend
+frontend/          React + Vite frontend
+smart-contracts/   Solidity + Hardhat smart contract
+docs/              Project documentation
 ```
 
 The complete local flow is:
@@ -152,7 +152,7 @@ blockchain_forms
 
 ## 4. Backend Setup
 
-Go to backend folder:
+Go to the backend folder:
 
 ```bash
 cd backend
@@ -262,7 +262,7 @@ Expected result:
 
 ## 6. Start Local Hardhat Blockchain
 
-In the same smart contract terminal:
+In the smart contract terminal:
 
 ```bash
 npm run node
@@ -276,13 +276,13 @@ This starts the local blockchain at:
 http://127.0.0.1:8545
 ```
 
-Hardhat provides test accounts and private keys. The project uses the first Hardhat account private key locally:
+Hardhat provides local test accounts and private keys. The project uses the first Hardhat account private key locally:
 
 ```text
 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 ```
 
-This key is only for local Hardhat development.
+This private key is only for local Hardhat development.
 
 Never use a real wallet private key in this project.
 
@@ -292,13 +292,13 @@ Never use a real wallet private key in this project.
 
 Open another Git Bash terminal.
 
-Go to smart contract folder:
+Go to the smart contract folder:
 
 ```bash
 cd smart-contracts
 ```
 
-Deploy contract:
+Deploy the contract:
 
 ```bash
 npm run deploy:local
@@ -381,15 +381,43 @@ The root URL `http://127.0.0.1:8000/` may show 404. That is normal because this 
 
 ---
 
-## 10. Create Demo Form Template
+## 10. Seed Demo Form Template
 
-Open Django admin:
+Instead of manually creating the form from Django admin, run:
+
+```bash
+cd backend
+source venv/Scripts/activate
+python manage.py seed_demo_data
+```
+
+This creates:
+
+```text
+Contact Verification Form
+Name field
+Email field
+Phone field
+Message field
+```
+
+Now test the form API:
+
+```text
+http://127.0.0.1:8000/api/forms/contact-verification-form/
+```
+
+You should see the form template and fields in JSON format.
+
+### Optional Manual Fallback
+
+If the seed command is not available, create the form manually from Django admin.
+
+Open:
 
 ```text
 http://127.0.0.1:8000/admin/
 ```
-
-Login using the admin user created earlier.
 
 Go to:
 
@@ -446,21 +474,13 @@ Active: Yes
 
 Save the form template.
 
-Now test the form API:
-
-```text
-http://127.0.0.1:8000/api/forms/contact-verification-form/
-```
-
-You should see the form template and fields in JSON format.
-
 ---
 
 ## 11. Frontend Setup
 
 Open a new Git Bash terminal.
 
-Go to frontend folder:
+Go to the frontend folder:
 
 ```bash
 cd frontend
@@ -502,7 +522,7 @@ http://localhost:5173/forms/contact-verification-form
 
 ## 12. Required Running Terminals
 
-For the complete application to work, keep three terminals running:
+For the complete application to work, keep three terminals running.
 
 ### Terminal 1: Local Blockchain
 
@@ -633,6 +653,8 @@ Default expected by this guide:
 DB_PASSWORD=postgres
 ```
 
+If you forgot the local PostgreSQL password, reset it locally and update the `.env` file.
+
 ### `Unable to connect to blockchain RPC`
 
 Make sure Hardhat node is running:
@@ -647,11 +669,11 @@ npm run node
 Check:
 
 ```text
-1. Hardhat node is running
-2. Smart contract is deployed
-3. backend/.env has the correct CONTRACT_ADDRESS
-4. Django backend was restarted after changing .env
-5. BACKEND_WALLET_PRIVATE_KEY is the first Hardhat account private key
+1. Hardhat node is running.
+2. Smart contract is deployed.
+3. backend/.env has the correct CONTRACT_ADDRESS.
+4. Django backend was restarted after changing .env.
+5. BACKEND_WALLET_PRIVATE_KEY is the first Hardhat account private key.
 ```
 
 ### Frontend cannot load form
@@ -659,11 +681,11 @@ Check:
 Check:
 
 ```text
-1. Django backend is running
-2. Form template exists in admin
-3. Form slug is exactly contact-verification-form
-4. frontend/.env has VITE_API_BASE_URL=http://127.0.0.1:8000/api
-5. CORS_ALLOWED_ORIGINS=http://localhost:5173 exists in backend/.env
+1. Django backend is running.
+2. Demo data was seeded using python manage.py seed_demo_data.
+3. Form slug is exactly contact-verification-form.
+4. frontend/.env has VITE_API_BASE_URL=http://127.0.0.1:8000/api.
+5. CORS_ALLOWED_ORIGINS=http://localhost:5173 exists in backend/.env.
 ```
 
 ### Django admin CSS looks broken
@@ -684,7 +706,7 @@ CTRL + F5
 
 ## 16. Files Not Committed to GitHub
 
-The following files/folders are intentionally ignored and must be created locally:
+The following files and folders are intentionally ignored and must be created locally:
 
 ```text
 backend/.env
@@ -719,12 +741,12 @@ Future Wallet Support: WalletConnect + Trust Wallet
 Planned improvements:
 
 ```text
-1. Add management command to seed demo form automatically
-2. Add WalletConnect integration
-3. Add Trust Wallet support
-4. Add BSC Testnet deployment
-5. Add frontend dashboard for submissions
-6. Add public verification certificate page
-7. Improve README with screenshots
-8. Add production deployment documentation
+1. WalletConnect integration
+2. Trust Wallet support
+3. BSC Testnet deployment
+4. Frontend dashboard for submissions
+5. Public verification certificate page
+6. Screenshots in README
+7. Production deployment documentation
+8. GitHub Actions workflow
 ```
