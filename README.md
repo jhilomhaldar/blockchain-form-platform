@@ -98,12 +98,13 @@ This keeps the local demo stable while still showing wallet connection, blockcha
 
 ![Admin Panel](screenshots/04-backend-admin-panel.png)
 
-> Recommended additional screenshots:
->
-> - `screenshots/05-submissions-dashboard.png`
-> - `screenshots/06-verification-certificate.png`
->
-> Add them after capturing the dashboard and certificate pages.
+### Form Submission Dahboard 
+
+![Admin Panel](screenshots/05-submissions-dashboard.png)
+
+### Verification Certificate
+
+![Admin Panel](screenshots/06-verification-certificate.png)
 
 ---
 
