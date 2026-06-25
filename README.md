@@ -41,6 +41,8 @@ Deployment to AWS, BSC Testnet, WalletConnect, and Trust Wallet integration are 
 * Dynamic form template management from Django admin
 * Form field management
 * Public form submission from React frontend
+* WalletConnect / Trust Wallet wallet connection
+* Connected wallet address attached to every form submission
 * PostgreSQL-based form data storage
 * SHA-256 hash generation for submitted data
 * Solidity smart contract for proof registration
@@ -417,8 +419,9 @@ This is currently a local-first portfolio project.
 
 Current limitations:
 
-* WalletConnect is not integrated yet.
-* Trust Wallet support is planned.
+* WalletConnect wallet connection is integrated.
+* Trust Wallet can be connected through WalletConnect.
+* Current blockchain gas transaction is still handled by the backend local Hardhat account.
 * BSC Testnet deployment is planned.
 * Production deployment is not configured yet.
 * Public verification certificate page is planned.

@@ -14,7 +14,8 @@ docs/              Project documentation
 The complete local flow is:
 
 ```text
-React Frontend
+WalletConnect / Trust Wallet
+→ React Frontend
 → Django REST API
 → PostgreSQL Database
 → SHA-256 Hash Generation
@@ -47,6 +48,10 @@ Node.js: 22.x
 npm: 11.x
 PostgreSQL: 16 / 18
 ```
+
+You will also need a **Reown Project ID** for WalletConnect / Trust Wallet connection.
+
+Create one from the Reown Dashboard and keep it ready for frontend `.env`.
 
 ---
 
@@ -497,6 +502,7 @@ Create frontend `.env`:
 ```bash
 cat > .env <<'EOF'
 VITE_API_BASE_URL=http://127.0.0.1:8000/api
+VITE_REOWN_PROJECT_ID=your_reown_project_id_here
 EOF
 ```
 
@@ -517,6 +523,20 @@ Open:
 ```text
 http://localhost:5173/forms/contact-verification-form
 ```
+
+### WalletConnect / Trust Wallet Setup
+
+This project uses **Reown AppKit / WalletConnect** for wallet connection.
+
+Create a project ID from the Reown Dashboard and add it to:
+
+```env
+VITE_REOWN_PROJECT_ID=your_reown_project_id_here
+```
+
+The connected wallet address is sent with the form submission.
+
+For the current local demo, the backend still handles the blockchain transaction using the local Hardhat account. This means reviewers do not need test BNB or a live Binance Smart Chain deployment to run the project locally.
 
 ---
 
@@ -556,6 +576,8 @@ Open:
 http://localhost:5173/forms/contact-verification-form
 ```
 
+Connect a wallet using WalletConnect / Trust Wallet or manually keep the demo wallet address.
+
 Fill the form and submit.
 
 Expected result:
@@ -563,6 +585,7 @@ Expected result:
 ```text
 Submission Ref: SUB-...
 Data Hash: 0x...
+Connected Wallet Address: 0x...
 Blockchain Status: BLOCKCHAIN_CONFIRMED
 Transaction Hash: 0x...
 Blockchain Message: Proof stored on blockchain.
@@ -676,6 +699,17 @@ Check:
 5. BACKEND_WALLET_PRIVATE_KEY is the first Hardhat account private key.
 ```
 
+### WalletConnect modal does not open
+
+Check:
+
+```text
+1. frontend/.env has VITE_REOWN_PROJECT_ID.
+2. The Reown Project ID is valid.
+3. Frontend server was restarted after changing .env.
+4. Browser console does not show AppKit initialization errors.
+```
+
 ### Frontend cannot load form
 
 Check:
@@ -730,8 +764,7 @@ Backend: Django REST Framework
 Database: PostgreSQL
 Blockchain: Local Hardhat Network
 Smart Contract: Solidity FormProofRegistry
-Wallet: Demo wallet address currently
-Future Wallet Support: WalletConnect + Trust Wallet
+Wallet: WalletConnect + Trust Wallet
 ```
 
 ---
@@ -741,9 +774,9 @@ Future Wallet Support: WalletConnect + Trust Wallet
 Planned improvements:
 
 ```text
-1. WalletConnect integration
-2. Trust Wallet support
-3. BSC Testnet deployment
+1. BSC Testnet deployment
+2. Binance Smart Chain mainnet-ready configuration
+3. User-signed blockchain transaction mode
 4. Frontend dashboard for submissions
 5. Public verification certificate page
 6. Screenshots in README
