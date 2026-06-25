@@ -2,6 +2,7 @@ import { Routes, Route, Link, Navigate } from "react-router-dom";
 import SubmitForm from "./pages/SubmitForm.jsx";
 import VerifySubmission from "./pages/VerifySubmission.jsx";
 import SubmissionsDashboard from "./pages/SubmissionsDashboard.jsx";
+import VerificationCertificate from "./pages/VerificationCertificate.jsx";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/verify" element={<VerifySubmission />} />
           <Route path="/verify/:submissionRef" element={<VerifySubmission />} />
           <Route path="/dashboard" element={<SubmissionsDashboard />} />
+          <Route path="/certificate/:submissionRef" element={<VerificationCertificate />} />
         </Routes>
       </main>
     </div>

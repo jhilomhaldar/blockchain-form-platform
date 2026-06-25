@@ -30,4 +30,9 @@ export const getSubmissionDashboard = async () => {
   return response.data;
 };
 
+export const getSubmissionCertificate = async (submissionRef) => {
+  const response = await api.get(`/certificates/${submissionRef}/`);
+  return response.data;
+};
+
 export default api;

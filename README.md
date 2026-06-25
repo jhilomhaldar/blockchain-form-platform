@@ -1,18 +1,25 @@
 # Blockchain-Powered Form Submission Platform
 
-A local-first full-stack blockchain-powered form submission and verification platform built with **Python, Django REST Framework, PostgreSQL, React, Solidity, Hardhat, and Web3.py**.
+A local-first full-stack blockchain-powered form submission, wallet connection, dashboard, and verification certificate platform built with **Python, Django REST Framework, PostgreSQL, React, Solidity, Hardhat, Web3.py, WalletConnect, and Trust Wallet support**.
 
-This project demonstrates how traditional web applications can be combined with blockchain-based proof storage to make form submissions tamper-verifiable.
+This project demonstrates how traditional web applications can be combined with blockchain-based proof storage to make form submissions tamper-verifiable while keeping the actual submitted data private.
 
 ---
 
 ## Project Purpose
 
-Traditional form submissions are stored only in centralized databases. If a record is modified later, it can be difficult to prove what the original submitted data was.
+Traditional form submissions are usually stored only in centralized databases. If a record is modified later, it can be difficult to prove what the original submitted data was.
 
-This project solves that problem by storing the actual submitted data in PostgreSQL and storing only a cryptographic proof of that data on a blockchain smart contract.
+This project solves that problem by:
 
-The submitted data remains private in the database, while the blockchain stores a tamper-proof hash that can be used for future verification.
+1. Storing the actual submitted form data in PostgreSQL.
+2. Creating a deterministic SHA-256 hash of the submitted data.
+3. Storing that hash on a Solidity smart contract.
+4. Saving the blockchain transaction hash with the database record.
+5. Allowing later verification by comparing the regenerated database hash with the blockchain proof.
+6. Showing a public certificate-style verification page for valid submissions.
+
+The submitted data remains private in PostgreSQL, while the blockchain stores only a tamper-verifiable proof.
 
 ---
 
@@ -23,37 +30,53 @@ This project currently runs fully on a local Windows development machine.
 Current working flow:
 
 ```text
-React Frontend
+WalletConnect / Trust Wallet
+→ React Frontend
 → Django REST API
 → PostgreSQL Database
 → SHA-256 Hash Generation
+→ Web3.py Blockchain Service
 → Local Hardhat Blockchain
 → Solidity Smart Contract
 → Blockchain Verification API
+→ React Verification Page
+→ Public Verification Certificate
 ```
 
-Deployment to AWS, BSC Testnet, WalletConnect, and Trust Wallet integration are planned future phases.
+Current blockchain transaction model:
+
+```text
+Connected wallet address is attached to the form submission.
+Backend local Hardhat account submits the proof transaction to the local blockchain.
+```
+
+This keeps the local demo stable while still showing wallet connection, blockchain proof registration, dashboard review, and certificate-based verification.
 
 ---
 
 ## Key Features
 
-* Dynamic form template management from Django admin
-* Form field management
-* Public form submission from React frontend
-* WalletConnect / Trust Wallet wallet connection
-* Connected wallet address attached to every form submission
-* PostgreSQL-based form data storage
-* SHA-256 hash generation for submitted data
-* Solidity smart contract for proof registration
-* Local Hardhat blockchain integration
-* Web3.py-based backend blockchain transaction handling
-* Blockchain transaction hash storage
-* Submission verification API
-* React verification page
-* Jazzmin-powered Django admin interface
-* Demo data seed command for easy local setup
-* Full local setup documentation for recruiters and developers
+- Dynamic form template management from Django admin
+- Form field management
+- Public form submission from React frontend
+- WalletConnect wallet connection
+- Trust Wallet connection through WalletConnect
+- Connected wallet address attached to every form submission
+- PostgreSQL-based form data storage
+- SHA-256 hash generation for submitted data
+- Solidity smart contract for proof registration
+- Local Hardhat blockchain integration
+- Web3.py-based backend blockchain transaction handling
+- Blockchain transaction hash storage
+- Submission verification API
+- React verification page
+- Public verification certificate page
+- Frontend submissions dashboard
+- Dashboard action buttons for technical verification and certificate view
+- Django management command to seed demo form data
+- Django management command to re-register old local submissions into the current Hardhat contract
+- Jazzmin-powered Django admin interface
+- Full local setup documentation for recruiters and developers
 
 ---
 
@@ -75,39 +98,51 @@ Deployment to AWS, BSC Testnet, WalletConnect, and Trust Wallet integration are 
 
 ![Admin Panel](screenshots/04-backend-admin-panel.png)
 
+> Recommended additional screenshots:
+>
+> - `screenshots/05-submissions-dashboard.png`
+> - `screenshots/06-verification-certificate.png`
+>
+> Add them after capturing the dashboard and certificate pages.
+
 ---
 
 ## Technology Stack
 
 ### Backend
 
-* Python
-* Django
-* Django REST Framework
-* PostgreSQL
-* Web3.py
-* Django Jazzmin Admin
-* python-decouple
-* django-cors-headers
+- Python
+- Django
+- Django REST Framework
+- PostgreSQL
+- Web3.py
+- Django Jazzmin Admin
+- python-decouple
+- django-cors-headers
 
 ### Frontend
 
-* React
-* Vite
-* Axios
-* React Router DOM
+- React
+- Vite
+- Axios
+- React Router DOM
+- Reown AppKit
+- WalletConnect
+- Wagmi
+- Viem
+- TanStack Query
 
 ### Blockchain
 
-* Solidity
-* Hardhat
-* Local Hardhat Network
-* ethers.js
-* Web3.py
+- Solidity
+- Hardhat
+- Local Hardhat Network
+- ethers.js
+- Web3.py
 
 ### Database
 
-* PostgreSQL local database
+- PostgreSQL local database
 
 ---
 
@@ -115,6 +150,9 @@ Deployment to AWS, BSC Testnet, WalletConnect, and Trust Wallet integration are 
 
 ```text
 User Browser
+    |
+    v
+WalletConnect / Trust Wallet
     |
     v
 React Frontend
@@ -143,14 +181,17 @@ The platform does not store full form data on the blockchain.
 
 Instead:
 
-1. User submits form data.
-2. Django validates and stores the submitted data in PostgreSQL.
-3. Django normalizes the submitted JSON data.
-4. Django generates a SHA-256 hash.
-5. Django sends the submission reference, hash, and wallet address to the Solidity smart contract.
-6. The smart contract stores the proof on the local blockchain.
-7. The transaction hash is saved in PostgreSQL.
-8. Later, the submission can be verified by comparing the database hash with the blockchain proof.
+1. User connects a wallet using WalletConnect / Trust Wallet.
+2. User submits form data from the React frontend.
+3. Django validates and stores the submitted data in PostgreSQL.
+4. Django normalizes the submitted JSON data.
+5. Django generates a SHA-256 hash.
+6. Django sends the submission reference, hash, and wallet address to the Solidity smart contract.
+7. The smart contract stores the proof on the local blockchain.
+8. The blockchain transaction hash is saved in PostgreSQL.
+9. The frontend dashboard lists the submission and blockchain status.
+10. The verification page compares the database hash with the blockchain proof.
+11. The certificate page displays a public-style verification result.
 
 Example:
 
@@ -160,6 +201,7 @@ Submitted Data
 → SHA-256 Hash
 → Smart Contract Proof
 → Verification Result
+→ Certificate Page
 ```
 
 ---
@@ -168,11 +210,11 @@ Submitted Data
 
 The platform stores only hashes on-chain because:
 
-* Blockchain data is public.
-* Sensitive form data should not be publicly exposed.
-* On-chain storage is expensive.
-* Blockchain data is difficult to delete.
-* Privacy-friendly architecture is better for real-world applications.
+- Blockchain data is public.
+- Sensitive form data should not be publicly exposed.
+- On-chain storage is expensive.
+- Blockchain data is difficult to delete.
+- Privacy-friendly architecture is better for real-world applications.
 
 Actual form data stays in PostgreSQL.
 
@@ -279,6 +321,46 @@ Example request:
 GET /api/submissions/{submission_ref}/verify/
 ```
 
+### Submissions Dashboard
+
+```http
+GET /api/submissions/dashboard/
+```
+
+### Public Verification Certificate
+
+```http
+GET /api/certificates/{submission_ref}/
+```
+
+---
+
+## Frontend Pages
+
+### Form Submission Page
+
+```text
+http://localhost:5173/forms/contact-verification-form
+```
+
+### Submissions Dashboard
+
+```text
+http://localhost:5173/dashboard
+```
+
+### Technical Verification Page
+
+```text
+http://localhost:5173/verify/{submission_ref}
+```
+
+### Public Verification Certificate Page
+
+```text
+http://localhost:5173/certificate/{submission_ref}
+```
+
 ---
 
 ## Local Setup
@@ -344,6 +426,48 @@ Message field
 
 ---
 
+## WalletConnect / Trust Wallet
+
+The frontend uses Reown AppKit / WalletConnect.
+
+A Reown Project ID is required in the frontend `.env` file:
+
+```env
+VITE_REOWN_PROJECT_ID=your_reown_project_id_here
+```
+
+The connected wallet address is sent to Django with every form submission.
+
+For the current local demo, the backend still submits the blockchain proof transaction using the local Hardhat account. This avoids requiring test BNB or a live BSC deployment during local review.
+
+---
+
+## Local Hardhat Resync Command
+
+Local Hardhat blockchain data is temporary. If Hardhat is restarted, older PostgreSQL submissions may still exist in the database, but their blockchain proof may no longer exist in the current local smart contract.
+
+To re-register existing local PostgreSQL submissions into the currently deployed local smart contract, run:
+
+```bash
+python manage.py resync_blockchain_proofs
+```
+
+Resync only one submission:
+
+```bash
+python manage.py resync_blockchain_proofs --ref SUB-YYYYMMDD-000001
+```
+
+Check what would be resynced without sending transactions:
+
+```bash
+python manage.py resync_blockchain_proofs --dry-run
+```
+
+This command is mainly for local Hardhat demo recovery. In a real persistent blockchain environment, old blockchain records would not disappear after restart.
+
+---
+
 ## Testing
 
 ### Smart Contract Tests
@@ -380,20 +504,37 @@ npm run dev
 
 Then submit and verify a form using the browser.
 
+Recommended test flow:
+
+```text
+1. Start Hardhat node.
+2. Deploy smart contract locally.
+3. Update backend CONTRACT_ADDRESS.
+4. Restart Django backend.
+5. Start React frontend.
+6. Submit a new form.
+7. Open the dashboard.
+8. Click Verify.
+9. Click Certificate.
+10. Confirm certificate status is VALID.
+```
+
 ---
 
 ## Security Design
 
 Security-focused decisions in this project:
 
-* Full form data is not stored on-chain.
-* Only cryptographic hashes are stored on-chain.
-* Backend secrets are stored in `.env`.
-* `.env` files are ignored by Git.
-* Local Hardhat private key is used only for development.
-* Real wallet private keys must never be committed.
-* PostgreSQL stores the actual private submission data.
-* Verification checks both database hash and blockchain proof.
+- Full form data is not stored on-chain.
+- Only cryptographic hashes are stored on-chain.
+- Backend secrets are stored in `.env`.
+- Frontend WalletConnect project ID is stored in frontend `.env`.
+- `.env` files are ignored by Git.
+- Local Hardhat private key is used only for development.
+- Real wallet private keys must never be committed.
+- PostgreSQL stores the actual private submission data.
+- Verification checks both database hash and blockchain proof.
+- Certificate page displays verification metadata, not full sensitive submission data.
 
 ---
 
@@ -419,12 +560,31 @@ This is currently a local-first portfolio project.
 
 Current limitations:
 
-* WalletConnect wallet connection is integrated.
-* Trust Wallet can be connected through WalletConnect.
-* Current blockchain gas transaction is still handled by the backend local Hardhat account.
-* BSC Testnet deployment is planned.
-* Production deployment is not configured yet.
-* Public verification certificate page is planned.
+- Current blockchain gas transaction is handled by the backend local Hardhat account.
+- Local Hardhat blockchain state resets when the node is restarted.
+- Old local submissions may need `python manage.py resync_blockchain_proofs` after Hardhat restart.
+- BSC Testnet deployment is planned.
+- Production deployment is not configured yet.
+- User-signed blockchain transaction mode is planned.
+
+---
+
+## Completed Modules
+
+```text
+Django + PostgreSQL backend
+Solidity smart contract
+Local Hardhat blockchain integration
+Web3.py blockchain service
+React frontend
+WalletConnect / Trust Wallet connection
+Frontend submissions dashboard
+Technical verification page
+Public verification certificate page
+Demo data seed command
+Local blockchain proof resync command
+Jazzmin Django admin
+```
 
 ---
 
@@ -433,16 +593,16 @@ Current limitations:
 Planned future improvements:
 
 ```text
-1. WalletConnect integration
-2. Trust Wallet support
-3. BSC Testnet deployment
-4. Binance Smart Chain mainnet-ready configuration
-5. Public verification certificate page
-6. Frontend submission dashboard
-7. Admin analytics dashboard
-8. Docker setup
-9. GitHub Actions workflow
-10. Production deployment guide
+1. BSC Testnet deployment
+2. Binance Smart Chain mainnet-ready configuration
+3. User-signed blockchain transaction mode
+4. Admin analytics dashboard
+5. Docker setup
+6. GitHub Actions workflow
+7. Production deployment guide
+8. AWS deployment option
+9. Additional screenshots and demo GIF
+10. Automated backend tests for API endpoints
 ```
 
 ---
@@ -451,8 +611,8 @@ Planned future improvements:
 
 **Jhilom Haldar**
 
-SaaS & Cloud Solution Architect
-Full Stack Platform Engineer
+SaaS & Cloud Solution Architect  
+Full Stack Platform Engineer  
 AI Automation Builder
 
 ---

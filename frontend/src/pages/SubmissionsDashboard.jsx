@@ -109,14 +109,23 @@ function SubmissionsDashboard() {
                   </td>
                   <td>{formatDate(item.created_at)}</td>
                   <td>
-                    <Link
-                      className="table-action"
-                      to={`/verify/${item.submission_ref}`}
-                    >
-                      Verify
-                    </Link>
-                  </td>
-                </tr>
+                    <div className="table-actions">
+                        <Link
+                        className="table-action"
+                        to={`/verify/${item.submission_ref}`}
+                        >
+                        Verify
+                        </Link>
+
+                        <Link
+                        className="table-action table-action-light"
+                        to={`/certificate/${item.submission_ref}`}
+                        >
+                        Certificate
+                        </Link>
+                    </div>
+                </td>
+            </tr>
               ))}
             </tbody>
           </table>

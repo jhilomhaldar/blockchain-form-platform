@@ -223,3 +223,74 @@ class SubmissionDashboardListAPIView(APIView):
             "count": len(results),
             "results": results,
         })
+    
+class SubmissionCertificateAPIView(APIView):
+    def get(self, request, submission_ref):
+        try:
+            submission = (
+                FormSubmission.objects
+                .select_related("form")
+                .get(submission_ref=submission_ref)
+            )
+        except FormSubmission.DoesNotExist:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Submission certificate not found.",
+                },
+                status=404,
+            )
+
+        submitted_data = submission.submitted_data or {}
+
+        try:
+            regenerated_hash = generate_submission_hash(submitted_data)
+            database_hash_matched = regenerated_hash == submission.data_hash
+
+            blockchain_result = verify_proof_on_blockchain(submission)
+            blockchain_verified = bool(blockchain_result.get("verified"))
+
+            final_verified = database_hash_matched and blockchain_verified
+
+            if final_verified:
+                submission.verification_status = "VERIFIED"
+            else:
+                submission.verification_status = "FAILED"
+
+            submission.save(update_fields=["verification_status", "updated_at"])
+
+            return Response(
+                {
+                    "success": True,
+                    "certificate": {
+                        "submission_ref": submission.submission_ref,
+                        "form_title": submission.form.title if submission.form else "",
+                        "form_slug": submission.form.slug if submission.form else "",
+                        "submitted_name": submitted_data.get("name", ""),
+                        "submitted_email": submitted_data.get("email", ""),
+                        "submitted_phone": submitted_data.get("phone", ""),
+                        "wallet_address": submission.wallet_address,
+                        "stored_data_hash": submission.data_hash,
+                        "regenerated_data_hash": regenerated_hash,
+                        "database_hash_matched": database_hash_matched,
+                        "blockchain_hash": blockchain_result.get("blockchain_hash"),
+                        "blockchain_verified": blockchain_verified,
+                        "final_verified": final_verified,
+                        "blockchain_tx_hash": submission.blockchain_tx_hash,
+                        "blockchain_status": submission.blockchain_status,
+                        "verification_status": submission.verification_status,
+                        "submitted_at": submission.created_at.isoformat() if submission.created_at else None,
+                        "verified_at": timezone.now().isoformat(),
+                    },
+                }
+            )
+
+        except Exception as exc:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Unable to generate verification certificate.",
+                    "error": str(exc),
+                },
+                status=500,
+            )

@@ -7,6 +7,7 @@ from .views import (
     FormSubmissionDetailAPIView,
     FormSubmissionVerifyAPIView,
     SubmissionDashboardListAPIView,
+    SubmissionCertificateAPIView,
 )
 
 urlpatterns = [
@@ -20,6 +21,12 @@ urlpatterns = [
         "submissions/dashboard/",
         SubmissionDashboardListAPIView.as_view(),
         name="submission-dashboard",
+    ),
+
+    path(
+        "certificates/<str:submission_ref>/",
+        SubmissionCertificateAPIView.as_view(),
+        name="submission-certificate",
     ),
 
     path(
