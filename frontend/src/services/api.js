@@ -25,4 +25,9 @@ export const verifySubmission = async (submissionRef) => {
   return response.data;
 };
 
+export const getSubmissionDashboard = async () => {
+  const response = await api.get("/submissions/dashboard/");
+  return response.data;
+};
+
 export default api;

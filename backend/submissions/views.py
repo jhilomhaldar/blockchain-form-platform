@@ -181,3 +181,45 @@ class FormSubmissionVerifyAPIView(APIView):
             "blockchain": blockchain_result,
             "verified": final_verified,
         })
+
+class SubmissionDashboardListAPIView(APIView):
+    def get(self, request):
+        try:
+            limit = int(request.query_params.get("limit", 50))
+        except ValueError:
+            limit = 50
+
+        limit = max(1, min(limit, 100))
+
+        submissions = (
+            FormSubmission.objects
+            .select_related("form")
+            .order_by("-created_at")[:limit]
+        )
+
+        results = []
+
+        for submission in submissions:
+            submitted_data = submission.submitted_data or {}
+
+            results.append({
+                "id": str(submission.id),
+                "submission_ref": submission.submission_ref,
+                "form_title": submission.form.title if submission.form else "",
+                "form_slug": submission.form.slug if submission.form else "",
+                "name": submitted_data.get("name", ""),
+                "email": submitted_data.get("email", ""),
+                "phone": submitted_data.get("phone", ""),
+                "wallet_address": submission.wallet_address,
+                "data_hash": submission.data_hash,
+                "blockchain_tx_hash": submission.blockchain_tx_hash,
+                "blockchain_status": submission.blockchain_status,
+                "verification_status": submission.verification_status,
+                "status": submission.status,
+                "created_at": submission.created_at.isoformat() if submission.created_at else None,
+            })
+
+        return Response({
+            "count": len(results),
+            "results": results,
+        })
